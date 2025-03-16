@@ -1,7 +1,24 @@
 import itchat
-import openai
+import requests
 
-openai.api_key = "你的 OpenAI API Key"
+# 这里换成你的 Mistral API Key
+MISTRAL_API_KEY = "U7Vm2lwNoDDQjj38UK1mjCAjrGWgJmUh"
+
+def get_mistral_reply(user_msg):
+    headers = {
+        "Authorization": f"Bearer {MISTRAL_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "model": "mistral-medium",
+        "messages": [{"role": "user", "content": user_msg}]
+    }
+    response = requests.post("https://api.mistral.ai/v1/chat/completions", json=data, headers=headers)
+    
+    if response.status_code == 200:
+        return response.json()["choices"][0]["message"]["content"]
+    else:
+        return "抱歉，我暂时无法回复。"
 
 itchat.auto_login(hotReload=True)
 
@@ -11,15 +28,7 @@ def group_reply(msg):
         user_msg = msg['Text']
         sender_name = msg['ActualNickName']
 
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": user_msg}]
-            )
-            reply = response["choices"][0]["message"]["content"]
-        except:
-            reply = "抱歉，我暂时无法回复，请稍后再试。"
-
+        reply = get_mistral_reply(user_msg)
         reply_text = f"@{sender_name} {reply}"
         itchat.send(reply_text, toUserName=msg['FromUserName'])
 
