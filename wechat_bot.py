@@ -2,7 +2,7 @@ import itchat
 import requests
 
 # 这里换成你的 Mistral API Key
-MISTRAL_API_KEY = "U7Vm2lwNoDDQjj38UK1mjCAjrGWgJmUh"
+MISTRAL_API_KEY = "U7Vm2lwNoDDQjj38UK1mjCAjrGWgJmUh"  # 请替换为你的 Mistral API Key
 
 def get_mistral_reply(user_msg):
     headers = {
@@ -10,7 +10,7 @@ def get_mistral_reply(user_msg):
         "Content-Type": "application/json"
     }
     data = {
-        "model": "mistral-medium",
+        "model": "mistral-medium",  # 选择模型
         "messages": [{"role": "user", "content": user_msg}]
     }
     response = requests.post("https://api.mistral.ai/v1/chat/completions", json=data, headers=headers)
